@@ -3,28 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerMovement : MonoBehaviour
-{
+public class PlayerMovement : MonoBehaviour {
     public float speed = 5;
     public float jumpForce = 400;
-   
+
     private bool isGrounded;
-    public int Score;
+    public static int Score;
+
     public Text textScore;
     [HideInInspector]
     public static Rigidbody2D rb;
-    // Start is called before the first frame update
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
 
+    public static bool isKeyTaken = false;
+    public GameObject key;
+    // Start is called before the first frame update
+    void Start() {
+        rb = GetComponent<Rigidbody2D>();
+        key.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         BaseMovement();
         ScoreUpdate();
+        KeyChecker();
     }
     void BaseMovement() {
 
@@ -51,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (col.transform.tag == "Ground") {
             isGrounded = true;
-        }    
+        }
     }
     void OnCollisionExit2D(Collision2D col) {
 
@@ -61,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
     void ScoreUpdate() {
-        
+
         textScore.text = " x " + Score;
     }
 
@@ -76,5 +78,17 @@ public class PlayerMovement : MonoBehaviour
             Score += 3;
             Destroy(collision.gameObject);
         }
+        if (collision.transform.tag == "Key") {
+
+            Score += 5;
+            isKeyTaken = true;
+            Destroy(collision.gameObject);
+        }
+    }
+    public void KeyChecker() {
+        if (isKeyTaken) {
+            key.gameObject.SetActive(true);
+        }
+        else { key.gameObject.SetActive(false); }
     }
 }
